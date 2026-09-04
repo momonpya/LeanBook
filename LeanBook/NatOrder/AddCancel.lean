@@ -27,3 +27,43 @@ theorem MyNat.add_right_cancel (h : l + m = n + m) : l = n := by
 theorem MyNat.add_left_cancel (h : l + m = l + n) : m = n := by
   rw [MyNat.add_comm l m, MyNat.add_comm l n] at h
   apply MyNat.add_right_cancel h
+
+-- section
+--  attribute [local simp] MyNat.add_left_cancel
+--  example : l + m = l + n → m = n := by
+--    simp
+-- end
+
+@[simp↓] theorem MyNat.add_right_cancel_iff : l + m = n + m ↔ l = n := by
+  constructor
+  . apply MyNat.add_right_cancel
+  . intro h
+    rw [h]
+
+@[simp↓] theorem MyNat.add_left_cancel_iff : l + m = l + n ↔ m = n := by
+  constructor
+  . apply MyNat.add_left_cancel
+  . intro h
+    rw [h]
+
+example : l + m = l + n ↔ m = n := by
+  simp
+
+@[simp] theorem MyNat.add_right_eq_self : m + n = m ↔ n = 0 := by
+  constructor <;> intro h
+  case mpr => simp_all
+  case mp =>
+    have : m + n = m + 0 := by
+      rw [h]
+      simp
+    simp_all
+
+@[simp] theorem MyNat.add_left_eq_self : n + m = m ↔ n = 0 := by
+  rw [MyNat.add_comm n m, MyNat.add_right_eq_self]
+
+@[simp] theorem MyNat.self_eq_add_right : m = m + n ↔ n = 0 := by
+  rw [show (m = m + n) ↔ (m + n = m) from by exact eq_comm]
+  exact MyNat.add_right_eq_self
+
+@[simp] theorem MyNat.self_eq_add_left : m = n + m ↔ n = 0 := by
+  rw [MyNat.add_comm n m, MyNat.self_eq_add_right]
